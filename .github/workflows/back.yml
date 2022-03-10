@@ -6,9 +6,9 @@ name: bcak
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
   # 可以设定定时任务执行
   schedule:
     # UTC 0 点 30 定期执行一次，跟北京时间大概相距8小时，但因为排队可能会稍微延后半小时左右
