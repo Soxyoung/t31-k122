@@ -21,35 +21,44 @@ SHA_TZ = timezone(
     name='Asia/Shanghai',
 )
 
-def scan(LINE, stations, SRC, DEST, dict):
-    response = requests.get('https://api.369cx.cn/v2/Bus/GetBussesByLineId/' + str(LINE), headers=headers)
-    info = json.loads(response.text)
-    result = info['result']
-    for bus in result:
-        no = bus['stationNo']
-        src_station = stations[no]
-        key = bus['name']
-        val = bus['siteTime']
-        if (src_station['name'] == SRC and dict.get(key) == None):
-            dict[key] = val
-            site_time = datetime.fromtimestamp(bus['siteTime'], SHA_TZ).strftime('%H:%M:%S')
-            print(site_time, bus['name'], src_station['name'], bus['velocity'], bus['quJian'])
-        if (src_station['name'] == DEST and dict.get(key) != None):
-            then = dict.pop(key)
-            delta = (val - then)
-            minute = int( delta / 60)
-            site_time = datetime.fromtimestamp(bus['siteTime'], SHA_TZ).strftime('%H:%M:%S')
-            print(site_time, bus['name'], src_station['name'], bus['velocity'], bus['quJian'], minute , "m" , (delta % 60) , "s" )
+def scan(LINE, stations, SRC, DEST, dict, LINE_NAME):
+    try:
+        response = requests.get('https://api.369cx.cn/v2/Bus/GetBussesByLineId/' + str(LINE), headers=headers)
+        info = json.loads(response.text)
+        result = info['result']
+        for bus in result:
+            no = bus['stationNo']
+            src_station = stations[no]
+            key = bus['name']
+            val = bus['siteTime']
+            if (src_station['name'] == SRC and dict.get(key) == None):
+                dict[key] = val
+                site_time = datetime.fromtimestamp(bus['siteTime'], SHA_TZ).strftime('%H:%M:%S')
+                # print(site_time, bus['name'], src_station['name'], bus['velocity'], bus['quJian'])
+            if (src_station['name'] == DEST and dict.get(key) != None):
+                then = dict.pop(key)
+                delta = (val - then)
+                minute = int(delta / 60)
+                end_time = datetime.fromtimestamp(bus['siteTime'], SHA_TZ).strftime('%H:%M:%S')
+                begin_time = datetime.fromtimestamp(then, SHA_TZ).strftime('%H:%M:%S')
+                # print(site_time, bus['name'], src_station['name'], bus['velocity'], bus['quJian'], minute , "m" , (delta % 60) , "s" )
+                print(begin_time, end_time, bus['name'], minute, "m", (delta % 60), "s", LINE_NAME)
+    except Exception as err:
+        print(err)
+    finally:
+        return
 
 def research(LINE, SRC, DEST, LINE1, SRC1, DEST1, start_time, end_time):
 
     response = requests.get('https://api.369cx.cn/v2/Line/GetRealTimeLineInfo/' + str(LINE), headers=headers)
     info = json.loads(response.text)
     stations = info['result']['stations']
+    name = info['result']['name']
 
     response = requests.get('https://api.369cx.cn/v2/Line/GetRealTimeLineInfo/' + str(LINE1), headers=headers)
     info = json.loads(response.text)
     stations1 = info['result']['stations']
+    name1 = info['result']['name']
 
     dict_k163 = {}
     dict_308 = {}
@@ -78,8 +87,8 @@ def research(LINE, SRC, DEST, LINE1, SRC1, DEST1, start_time, end_time):
         else:
             begin = time.time()
 
-            scan(LINE, stations, SRC, DEST, dict_k163)
-            scan(LINE1, stations1, SRC1, DEST1, dict_308)
+            scan(LINE, stations, SRC, DEST, dict_k163, name)
+            scan(LINE1, stations1, SRC1, DEST1, dict_308, name1)
 
             end = time.time()
             sleep_times = begin + 10.0 - end
