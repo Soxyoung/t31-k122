@@ -45,20 +45,31 @@ def scan(LINE, stations, SRC, DEST, dict, LINE_NAME):
                 print(begin_time, end_time, bus['name'], minute, "m", (delta % 60), "s", LINE_NAME)
     except Exception as err:
         print(err)
+        print("刷新", LINE_NAME, "线路信息出错")
     finally:
         return
 
 def research(LINE, SRC, DEST, LINE1, SRC1, DEST1, start_time, end_time):
 
-    response = requests.get('https://api.369cx.cn/v2/Line/GetRealTimeLineInfo/' + str(LINE), headers=headers)
-    info = json.loads(response.text)
-    stations = info['result']['stations']
-    name = info['result']['name']
+    try:
+        response = requests.get('https://api.369cx.cn/v2/Line/GetRealTimeLineInfo/' + str(LINE), headers=headers)
+        info = json.loads(response.text)
+        stations = info['result']['stations']
+        name = info['result']['name']
+    except Exception as err:
+        print(err)
+        print("获取线路", LINE, "站点信息出错")
+        exit(0)
 
-    response = requests.get('https://api.369cx.cn/v2/Line/GetRealTimeLineInfo/' + str(LINE1), headers=headers)
-    info = json.loads(response.text)
-    stations1 = info['result']['stations']
-    name1 = info['result']['name']
+    try:
+        response = requests.get('https://api.369cx.cn/v2/Line/GetRealTimeLineInfo/' + str(LINE1), headers=headers)
+        info = json.loads(response.text)
+        stations1 = info['result']['stations']
+        name1 = info['result']['name']
+    except Exception as err:
+        print(err)
+        print("获取线路", LINE1, "站点信息出错")
+        exit(0)
 
     dict_k163 = {}
     dict_308 = {}
@@ -66,37 +77,45 @@ def research(LINE, SRC, DEST, LINE1, SRC1, DEST1, start_time, end_time):
     utc_now = datetime.utcnow().replace(tzinfo=timezone.utc)
     beijing_now = utc_now.astimezone(SHA_TZ).strftime("%H:%M")
     print(beijing_now)
-#     print("-------------------------------------------------")
-#     print(LINE, SRC, DEST, stations)
-#     print("-------------------------------------------------")
-#     print(LINE1, SRC1, DEST1, stations1)
-#     print("-------------------------------------------------")
+
+    delta_max = (int)(5.95*60*60)
+    start = time.time()
 
     if (0 != info['status']['code']):
         exit(0)
 
     while True:
-
+        end = time.time()
+        delta = (int)(end - start)
+        if (delta >= delta_max):
+            print("触发超时巡检退出条件，结束运行！")
+            exit(0)
         if (beijing_now > end_time):
-            break
+            print("正常到达结束时间，结束运行！")
+            exit(0)
         if (start_time > beijing_now):
             time.sleep(10)
             utc_now = datetime.utcnow().replace(tzinfo=timezone.utc)
             beijing_now = utc_now.astimezone(SHA_TZ).strftime("%H:%M")
             continue
         else:
-            begin = time.time()
+            try:
+                begin = time.time()
 
-            scan(LINE, stations, SRC, DEST, dict_k163, name)
-            scan(LINE1, stations1, SRC1, DEST1, dict_308, name1)
+                scan(LINE, stations, SRC, DEST, dict_k163, name)
+                scan(LINE1, stations1, SRC1, DEST1, dict_308, name1)
 
-            end = time.time()
-            sleep_times = begin + 10.0 - end
-            if (sleep_times <= 0.0):
-                sleep_times = 9.5
-            time.sleep(sleep_times)
-            utc_now = datetime.utcnow().replace(tzinfo=timezone.utc)
-            beijing_now = utc_now.astimezone(SHA_TZ).strftime("%H:%M")
+                end = time.time()
+                sleep_times = begin + 10.0 - end
+                if (sleep_times <= 0.0):
+                    sleep_times = 9.5
+                time.sleep(sleep_times)
+                utc_now = datetime.utcnow().replace(tzinfo=timezone.utc)
+                beijing_now = utc_now.astimezone(SHA_TZ).strftime("%H:%M")
+            except Exception as err:
+                print(err)
+                time.sleep(9.5)
+
 
 if __name__ == '__main__':
 
