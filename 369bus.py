@@ -115,7 +115,35 @@ def research(LINE, SRC, DEST, LINE1, SRC1, DEST1, start_time, end_time):
             except Exception as err:
                 print(err)
                 time.sleep(9.5)
+#!/usr/bin/python3
 
+import smtplib
+#coding:utf -8
+
+import smtplib #smtp服务器
+from email.mime.text import MIMEText #邮件文本
+
+
+def sendEmail(title, content):
+    mail_user = "soyounsowhat@163.com"#接收方
+    recver = "soyounsowhat@163.com"#接收方
+    mail_pass = "ZBPCIYOFQTOUBNGT"#邮箱密码
+    sender = "soyounsowhat@163.com"#接收方
+    receivers = ["soyounsowhat@163.com"]
+    message = MIMEText(content, 'plain', 'utf-8')  # 内容, 格式, 编码
+    message['From'] = "{}".format(sender)
+    message['To'] = ",".join(receivers)
+    message['Subject'] = title
+
+    mail_host = "smtp.163.com"
+
+    try:
+        smtpObj = smtplib.SMTP_SSL(mail_host, 994)  # 启用SSL发信, 端口一般是465
+        smtpObj.login(mail_user, mail_pass)  # 登录验证
+        smtpObj.sendmail(sender, receivers, message.as_string())  # 发送
+        print("mail has been send successfully.")
+    except smtplib.SMTPException as e:
+        print(e)
 
 if __name__ == '__main__':
 
@@ -130,5 +158,7 @@ if __name__ == '__main__':
     _start_time = sys.argv[7]
     _end_time = sys.argv[8]
 
+    sendEmail("hi", "hello world!" + _LINE + _SRC + _DEST + _LINE1 + _SRC1 + _DEST1 + _start_time + _end_time)
+    
     print(_LINE, _SRC, _DEST, _LINE1, _SRC1, _DEST1, _start_time, _end_time)
     research(_LINE, _SRC, _DEST, _LINE1, _SRC1, _DEST1, _start_time, _end_time)
