@@ -32,7 +32,7 @@ def sendEmail(title, content):
 headers = {
     'Host': 'api.369cx.cn',
     'content-type': 'application/json',
-    'Authorization': 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IiIsInJvbGUiOiJWaXNpdG9yLFVzZXIiLCJuYW1laWQiOiIxMTIzNTA0IiwianRpIjoiMDRmMTE2M2EtN2YzNS00NmI2LWFlYjgtODYyM2Y3NTA1NDM5IiwibmJmIjoxNjQ3MjM0OTUwLCJleHAiOjE2NDk4MjY5NTAsImlhdCI6MTY0NzIzNDk1MCwiaXNzIjoid2ViLjM2OWN4LmNuIiwiYXVkIjoiYXBpLndlYi4zNjljeC5jbiJ9.KvC6VzTsY3Qlyyv_4PnaqIogXB5VMLmqQP9UNf8jxqzsBdZMSoQrQW7ZloB-DxIOAokhl9dU7F-Hr8UeGRP5viLDRiCE63a93M1AOKsypIFNTz6lUdehfKa_3ZTuGK-rzB6QRxGFdrNGfaSsq3eU2nPFn9LBT5FP0RPgriPmzJ2-qtX4aykuBla-3C7uZditie1DIgozsOdv0f6tYUlXFwkrFKJBKMtXo-dRK2sh12gyMSj3L6hVdG5foj-PfbxXWg2PtDn7_3M41dj9gdBpUDaHZAJQmGRM9XkswSlcGTaVdkpor17rZGzocbvWu8PthUMi7zqnzP-OgQ2xaIx_IA',
+    'Authorization': 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IiIsInJvbGUiOiJWaXNpdG9yLFVzZXIiLCJuYW1laWQiOiIxMDg3NTI1IiwianRpIjoiYzllYTg0MmMtM2Y5MC00NzFlLWI0ZmEtMTg1MmFmZjk3MWRiIiwibmJmIjoxNjQ3ODYxODI1LCJleHAiOjE2NTA0NTM4MjUsImlhdCI6MTY0Nzg2MTgyNSwiaXNzIjoid2ViLjM2OWN4LmNuIiwiYXVkIjoiYXBpLndlYi4zNjljeC5jbiJ9.O2vcRdJW7MYEZ6FdiLa-hybS7RVIrlQXM1pbIjT6uZEnx-ZqUuGaKZ8ivtxrr9_-2w3nwTJhohvM7bXp6amovq_dQrNz6yxBewuM2hjdnCUFBm7cTt72bZLY-_6u1wI04N0tapc1ve7TY7xDVlhS9nSSkixoUX8_mXn-T9cRGaVDDuLHLFxnCewtUTXD3R2x6J8GK4x8_vJt1lwy1o1VxX0qbJXr9sfPbTo3ohPopq5vFvdJCFJ-DfTOf_-6fjnSItRM5xwi-t8B_MLAfB6GOe0Id1Uo4t34pg7gpiFMPXgLuOqs8-EOKbnvDun6YyK6IkAdVWRfvXO7wp6teBbTMw',
     'CityId': '2500',
     'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.18(0x18001231) NetType/WIFI Language/zh_CN',
     'Referer': 'https://servicewechat.com/wx358ad33429ed6508/32/page-frame.html',
@@ -128,8 +128,6 @@ def research(LINE, SRC, DEST, LINE1, SRC1, DEST1, start_time, end_time):
         content += detail2
         content += "\r\n"
 
-        if (cnt % 60 == 0):
-            sendEmail("第"+ str(cnt) +"次查询线路", content)
 
         if (delta >= delta_max):
             print("触发超时巡检退出条件，结束运行！")
