@@ -1,5 +1,4 @@
 # coding:utf-8
-
 import smtplib #smtp服务器
 from email.mime.text import MIMEText #邮件文本
 import requests
@@ -9,6 +8,26 @@ import time
 from datetime import timedelta
 from datetime import timezone
 import sys
+
+def sendEmail(title, content):
+    mail_user = "soyounsowhat@163.com"#接收方
+    recver = "soyounsowhat@163.com"#接收方
+    mail_pass = "ZBPCIYOFQTOUBNGT"#邮箱密码
+    sender = "soyounsowhat@163.com"#接收方
+    receivers = ["soyounsowhat@163.com"]
+    message = MIMEText(content, 'plain', 'utf-8')  # 内容, 格式, 编码
+    message['From'] = "{}".format(sender)
+    message['To'] = ",".join(receivers)
+    message['Subject'] = title
+
+    mail_host = "smtp.163.com"
+
+    try:
+        smtpObj = smtplib.SMTP_SSL(mail_host, 994)  # 启用SSL发信, 端口一般是465
+        smtpObj.login(mail_user, mail_pass)  # 登录验证
+        smtpObj.sendmail(sender, receivers, message.as_string())  # 发送
+    except smtplib.SMTPException as e:
+        print(e)
 
 headers = {
     'Host': 'api.369cx.cn',
@@ -81,20 +100,41 @@ def research(LINE, SRC, DEST, LINE1, SRC1, DEST1, start_time, end_time):
     beijing_now = utc_now.astimezone(SHA_TZ).strftime("%H:%M")
     print(beijing_now)
 
-    delta_max = (int)(5.95*60*60)
+    delta_max = (int)(3.95*60*60)
     start = time.time()
 
     if (0 != info['status']['code']):
         exit(0)
 
+    cnt = 0
+    content = ""
+    detail1_fmt = "东八区：当前时间 %s 期望开始时间 %s 期望结束时间 %s"
+    detail2_fmt = "倒计时：已经运行 %s 期望结束时差 %s 当前时间 %s"
     while True:
-        end = time.time()
-        delta = (int)(end - start)
+        cnt += 1
+
+        now = time.time()
+        delta = (int)(now - start)
+        # print("+++++++++++++++++++++++++++++++++++++++++++++++")
+        # print("now:", time.strftime("%a %b %d %H:%M:%S %Y", time.localtime()), " delta: ", delta)
+        # print("start_time: ", start_time, " beijing_now: ", beijing_now, " end_time: ", end_time)
+        # print("+++++++++++++++++++++++++++++++++++++++++++++++")
+        data1 = (beijing_now, start_time, end_time)
+        data2 = (delta, delta_max, time.strftime("%a %b %d %H:%M:%S %Y", time.localtime()))
+        detail1 = (detail1_fmt %data1)
+        detail2 = (detail2_fmt %data2)
+
+        content += detail1 + "\r\n"
+        content += detail2
+        content += "\r\n"
+
+        if (cnt % 10 == 0):
+            sendEmail("第"+ str(cnt) +"次查询线路", content)
+
         if (delta >= delta_max):
             print("触发超时巡检退出条件，结束运行！")
             exit(0)
         if (beijing_now > end_time):
-            print("正常到达结束时间，结束运行！")
             exit(0)
         if (start_time > beijing_now):
             time.sleep(10)
@@ -119,26 +159,6 @@ def research(LINE, SRC, DEST, LINE1, SRC1, DEST1, start_time, end_time):
                 print(err)
                 time.sleep(9.5)
 
-def sendEmail(title, content):
-    mail_user = "soyounsowhat@163.com"#接收方
-    recver = "soyounsowhat@163.com"#接收方
-    mail_pass = "ZBPCIYOFQTOUBNGT"#邮箱密码
-    sender = "soyounsowhat@163.com"#接收方
-    receivers = ["soyounsowhat@163.com"]
-    message = MIMEText(content, 'plain', 'utf-8')  # 内容, 格式, 编码
-    message['From'] = "{}".format(sender)
-    message['To'] = ",".join(receivers)
-    message['Subject'] = title
-
-    mail_host = "smtp.163.com"
-
-    try:
-        smtpObj = smtplib.SMTP_SSL(mail_host, 994)  # 启用SSL发信, 端口一般是465
-        smtpObj.login(mail_user, mail_pass)  # 登录验证
-        smtpObj.sendmail(sender, receivers, message.as_string())  # 发送
-    except smtplib.SMTPException as e:
-        print(e)
-
 if __name__ == '__main__':
 
     _LINE = sys.argv[1]
@@ -152,7 +172,8 @@ if __name__ == '__main__':
     _start_time = sys.argv[7]
     _end_time = sys.argv[8]
 
-    sendEmail("hi", "hello world!" + _LINE + _SRC + _DEST + _LINE1 + _SRC1 + _DEST1 + _start_time + _end_time)
-    
-    print(_LINE, _SRC, _DEST, _LINE1, _SRC1, _DEST1, _start_time, _end_time)
+    data = (_LINE, _SRC, _DEST, _LINE1, _SRC1, _DEST1, _start_time, _end_time)
+    format_str=" %s %s %s %s %s %s %s %s"
+    title = (format_str %data)
+
     research(_LINE, _SRC, _DEST, _LINE1, _SRC1, _DEST1, _start_time, _end_time)
