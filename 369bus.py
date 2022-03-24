@@ -1,4 +1,7 @@
 # coding:utf-8
+
+import smtplib #smtp服务器
+from email.mime.text import MIMEText #邮件文本
 import requests
 import json
 from datetime import datetime
@@ -115,14 +118,6 @@ def research(LINE, SRC, DEST, LINE1, SRC1, DEST1, start_time, end_time):
             except Exception as err:
                 print(err)
                 time.sleep(9.5)
-#!/usr/bin/python3
-
-import smtplib
-#coding:utf -8
-
-import smtplib #smtp服务器
-from email.mime.text import MIMEText #邮件文本
-
 
 def sendEmail(title, content):
     mail_user = "soyounsowhat@163.com"#接收方
@@ -141,7 +136,6 @@ def sendEmail(title, content):
         smtpObj = smtplib.SMTP_SSL(mail_host, 994)  # 启用SSL发信, 端口一般是465
         smtpObj.login(mail_user, mail_pass)  # 登录验证
         smtpObj.sendmail(sender, receivers, message.as_string())  # 发送
-        print("mail has been send successfully.")
     except smtplib.SMTPException as e:
         print(e)
 
