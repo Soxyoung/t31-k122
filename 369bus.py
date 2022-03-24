@@ -128,7 +128,7 @@ def research(LINE, SRC, DEST, LINE1, SRC1, DEST1, start_time, end_time):
         content += detail2
         content += "\r\n"
 
-        if (cnt % 10 == 0):
+        if (cnt % 60 == 0):
             sendEmail("第"+ str(cnt) +"次查询线路", content)
 
         if (delta >= delta_max):
