@@ -1,6 +1,6 @@
 # coding:utf-8
-import smtplib #smtp服务器
-from email.mime.text import MIMEText #邮件文本
+import base64
+
 import requests
 import json
 from datetime import datetime
@@ -8,31 +8,76 @@ import time
 from datetime import timedelta
 from datetime import timezone
 import sys
+import random
+import uuid
 
-def sendEmail(title, content):
-    mail_user = "soyounsowhat@163.com"#接收方
-    recver = "soyounsowhat@163.com"#接收方
-    mail_pass = "ZBPCIYOFQTOUBNGT"#邮箱密码
-    sender = "soyounsowhat@163.com"#接收方
-    receivers = ["soyounsowhat@163.com"]
-    message = MIMEText(content, 'plain', 'utf-8')  # 内容, 格式, 编码
-    message['From'] = "{}".format(sender)
-    message['To'] = ",".join(receivers)
-    message['Subject'] = title
+geo_dict = [
+    'F%QDqpc',
+    'F%L#VZj',
+    'F%Pq-jD',
+    "aL?Jp,q",
+    "aL~M!6f",
+    "aL:O:5-",
+    "aL?,!D;",
+    "aL;x^1J",
+    "aL/j~j7",
+    "aL;L4=%",
+    "aL/j~j^",
+    "aL(1)/s",
+    "aL%*G5*",
+    "aL)^Rd'",
+    "aL;^eP3",
+    "aL`BHoj",
+    "aL~TP!%",
+    "aL;u7u)",
+    "F%A2-sv",
+    "F%Or_qC",
+    "F%K)2r`",
+    "F%Ma4SQ"
+]
 
-    mail_host = "smtp.163.com"
-
+def get_jwt_token():
     try:
-        smtpObj = smtplib.SMTP_SSL(mail_host, 994)  # 启用SSL发信, 端口一般是465
-        smtpObj.login(mail_user, mail_pass)  # 登录验证
-        smtpObj.sendmail(sender, receivers, message.as_string())  # 发送
-    except smtplib.SMTPException as e:
-        print(e)
+        time_369 = time.strftime("%a, %d %b %Y %H:%M:%S GMT", time.localtime())
+        sign = str(uuid.uuid1()).replace("-", "")
+        s_host = b'YXBpLjM2OWN4LmNu'
+        host = base64.b64decode(s_host).decode()
+        headers = {
+            'Host': host,
+            'accept': '*/*',
+            'authorization': '',
+            'accept-language': 'zh-Hans-CN;q=1, en-CN;q=0.9',
+            'date': time_369,
+            'cityid': '2500',
+            'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X; iPhone_SE) Cx369iOS/7200 NetType/WIFI DarkMode/0 BlindMode/0',
+            'geo': '',
+            'sign': sign,
+        }
+        s_url = b'aHR0cHM6Ly9hcGkuMzY5Y3guY24vdjIvQXV0aC9Mb2dpbkJ5VGVtcA=='
+        url = base64.b64decode(s_url).decode()
+        response = requests.post(url, headers=headers)
+        print(response.json()["result"]["token"])
+        return str(response.json()["result"]["token"])
+    except Exception as err:
+        print(err)
+        jwt_dict = [
+            "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Ik1ESXpNalE1TmpJdE5URmhaUzAwTURFM0xXSmpOREl0TTJaaU5HVTNNMkk1T0dabCIsInJvbGUiOiJWaXNpdG9yIiwibmFtZWlkIjoiLTEyNjQ5OTIyNjciLCJqdGkiOiJiOTNiNmE2Zi04ZTEzLTRhZTQtOTMyYy1jZDhjNjdhNGU3ZDYiLCJuYmYiOjE2NDc3NTQyMTUsImV4cCI6MTgwNTUyMDYxNSwiaWF0IjoxNjQ3NzU0MjE1LCJpc3MiOiJ3ZWIuMzY5Y3guY24iLCJhdWQiOiJhcGkud2ViLjM2OWN4LmNuIn0.GZ-1YIfaikow-ijfZeM7tbZcL-QYZ5c621lBlvevcE5n5VzgNtCJt93S_0iemH29tTNMH2Bjqvo5unByEdixCFlkFC_LRgPBfPXhEelGwoSu5jLrldoXGNFF8mp6tJPsPaqqglkcq1KOBu-RjMmuyDgMmFAlAoKyijbEEKhJ9Pj_9SjqRBbkKgDj8qUeSRc-TGtFaEMgGRWYZX2EHRglE_aXOrWPm-6tNffuuDn234LJysVtoTlBDMbfIz2G_cVs5usSEVD7CXyZ8ZZ9j5845nrp7Z8wdg8mCj2-Z3xasPnfvi5v5XZmOJK7ShAebfK5IgIRRS_EUk5Oxhq6COP_Xw",
+            'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IlpETXhZVEZpWW1ZdFlUazVOUzAwTmpjMUxUaG1NelV0TVRjNFl6aGtaamhqWWpNMyIsInJvbGUiOiJWaXNpdG9yIiwibmFtZWlkIjoiLTE4Nzk4NDY3MTkiLCJqdGkiOiIxMGFlMmFkYi0wNGFlLTQ3MmMtYjgwMC1jMjliMzQwMTc3YzMiLCJuYmYiOjE2NDcxODI4MTMsImV4cCI6MTgwNDk0OTIxMywiaWF0IjoxNjQ3MTgyODEzLCJpc3MiOiJ3ZWIuMzY5Y3guY24iLCJhdWQiOiJhcGkud2ViLjM2OWN4LmNuIn0.EULawyV_Zd1phVU1xMQXDTM9MsemJi8NBe_wQJPhZnX_Vxb80GtDl-l5LhZkULaq9YtTF6COTt7z_-qvdWYit2OUS627rjUWitXA34DPFvoTpaQDpiC9YuLF9gxI7qcwz3Uij_pM4wIRWaiTqy1CCqkoyl4gGAcV5BHKectVM1n01n30aQJt529aaSwo1AfhJDjNqUCrfbnbNo5FFq06Z_M4-xyvjK22oXh8EzGDwsc324PP1l8oZmZnpFhLnOdzbgqaE9P1uoqdENFJP7q_tDIihpRboB4XmXnvWpTqCbJAtgX8u081-dQfZm_TslsN391bYzWbdxFZBIF8LEgiQg',
+            'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IlptTmxNMll3WkRjdFpXWTJNaTAwT1RRNExUZ3dZbVl0T0dZMFlXWTBaVE0yTkRJeSIsInJvbGUiOiJWaXNpdG9yIiwibmFtZWlkIjoiLTE2MTA5MzUyODIiLCJqdGkiOiJlNjhiNWRiZS00ZTJlLTRhM2EtOWVlNi03MDE2NzFhNDk1MGIiLCJuYmYiOjE2NDcxMzc1MDksImV4cCI6MTgwNDkwMzkwOSwiaWF0IjoxNjQ3MTM3NTA5LCJpc3MiOiJ3ZWIuMzY5Y3guY24iLCJhdWQiOiJhcGkud2ViLjM2OWN4LmNuIn0.PiR8LEjkcySPEpv2nJzHY2lp-_t0SeKWOMOw-Ag_tQl_Mis03jlvV-2Y01WfU-nvMtfrzXreUDH8Da06exjSoMdZ9Amy5GsQ-VxgxZHflloB04hp-MZ1zDFZPC3PfwYZTGDk2RHBzwcq62l7RLVWfq1XR84LH6wqcNeUDvUe89VivbH3kJ0QO4CRaqjCThbDq7GF9CDsTg-ajMd6bCu3ZhE5VXfH2NcmtFE_okM8feH7bLkSIgKJMrBS2pdNSTPmTSYwi4oEDxAQiBge4IhqI9JE_KPfqB5cKaW5C_9O-9yVpj7w-ItrhhQsaMAylm7buTJeyj72nmGRk1niGGUeCA',
+            'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Ik4yTXlPR1F4WW1JdE1tUXpOaTAwTmpZeUxXSXhNalF0TmpRM09XRXpOVFF3TmpVeSIsInJvbGUiOiJWaXNpdG9yIiwibmFtZWlkIjoiLTEyNTQ0NzQ0NjEiLCJqdGkiOiIwNjEzMjFhZC1hN2U5LTQ2OTYtODliOS03YTA3ZTg5M2IwZjUiLCJuYmYiOjE2NDc3MDAxMTcsImV4cCI6MTgwNTQ2NjUxNywiaWF0IjoxNjQ3NzAwMTE3LCJpc3MiOiJ3ZWIuMzY5Y3guY24iLCJhdWQiOiJhcGkud2ViLjM2OWN4LmNuIn0.FmlJ_IsLb3CP5uJ1ycqnAlpylO8bigsS7FkV3pNqMoUvr-6886_JYjdRD-W5anaXaJpuZmoLL7Mnwg5bjk8imbO5NUzjOH9mDwDKLlqMBQxUiWK-2gkAih2S3v9LKckDl28v09j4N5tGZx9Fwiz2OuARr-6cq15VshUZRDtwFbo9FTIg9FgP4517bqnKxc7IJOneN0x4iuISgnl3KVwFYDP6za8eCHMZgcoufACpwAjr44Wnh7Oj7TC4HWhlRtdCpTN8lAv27wboCHC9KmEiU8tJHIf9oJiKEeAi18NITWgJaNIdfW9EO_G8F_sTxVZ5S-2xuaKfZjvIFd9XXmYa_Q',
+            "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Ik5UbGtNbVZrTnpVdFpEVmlPUzAwWVRsa0xUazFNalV0WVdOalpHRm1aVE5qTm1aaSIsInJvbGUiOiJWaXNpdG9yIiwibmFtZWlkIjoiLTE3NzU0NTQyNjMiLCJqdGkiOiI5MGEzYzRmZi0wMjliLTQ3MTctOThmMS1lZDYzNDJhY2NhNjYiLCJuYmYiOjE2NDY5ODMyMzMsImV4cCI6MTgwNDc0OTYzMywiaWF0IjoxNjQ2OTgzMjMzLCJpc3MiOiJ3ZWIuMzY5Y3guY24iLCJhdWQiOiJhcGkud2ViLjM2OWN4LmNuIn0.ngXiGrBc44VE9nWGT_2Kmm8METc-aNugaLRzf3lBtQL2mmxSVKN0eMjgmfWuISj6nphdj8dUN6oDkBss2t5fV3W0Z3lITpSr32_m0m2K5l2RlL-lrWVzTWvZci6rmIB1WcxCVzNcOeaw4oAUO8jSmXXK5rxYfml8sd-Nzc07pvOZOw8qLX0tZyedDCeVPcc7GRuJzzu4e4Bjaurtrs-lunYwrilW7ZF-lzC3RDUj5bW8x3Bk-Am2ClIw8UvrA3QQvozD8dOFD_IT_Sot0vCVCe_WB6QBbGxFdowg9AOCJ6lvzTriPhPTbZY2WnZG4Buh_2AoMo8ztz8zlflDhXBygg",
+            "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Ik9HSm1NVFpqWldVdE5qTTVOeTAwWVROaUxUZzBOakl0TURObE5qWXhNVEl3TmpneSIsInJvbGUiOiJWaXNpdG9yIiwibmFtZWlkIjoiLTE3MDAwNjEwMCIsImp0aSI6ImE3MmYxNTUyLWUwMzUtNDYwOC05NDcyLTZmNmIwZTYzNjA3YSIsIm5iZiI6MTY0Nzc1NjE4MiwiZXhwIjoxODA1NTIyNTgyLCJpYXQiOjE2NDc3NTYxODIsImlzcyI6IndlYi4zNjljeC5jbiIsImF1ZCI6ImFwaS53ZWIuMzY5Y3guY24ifQ.LI-b11u8AiuJldQZki1gqHqqDyp2oKIsX3KwgexatllQObNFaeO3TrLZR1Xx_AkytXayyH2RaiBUbgoPMj1uJeF3nRs4DFEH3WU2KXPYHDan466lvoodoEko7ogkukD025_LdPKmL5AVWcPa-7iEBWJNyvZW3LyFjUz3czMUFPDNr0NQDNT2IyokSiB_TefuV_9UozZbiIuKEaF8AS_rtmWPETE5AkVy84TvjSpkG3RzE0smvIotxNfFnfq_inwr_iJpUm0AsZJtfbqEoe4QgcavJJrdzZThtXqYZQr8x3k3sjkYAIrHJvPerTLPe2omVuth098180s0_FSCaAg6uA",
+            "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IllqUmhNMlJtWVdZdE9UQTVNQzAwWkRCakxUaGpORFV0TmpobU1tTm1OVFpqWmpsayIsInJvbGUiOiJWaXNpdG9yIiwibmFtZWlkIjoiLTc4OTg3NTEyOCIsImp0aSI6IjI2MzA1MmFjLTZhNzktNDQ0Ni1iMGNiLTgxOWRkNDI3YmNhYSIsIm5iZiI6MTY0Nzc1NjI4OSwiZXhwIjoxODA1NTIyNjg5LCJpYXQiOjE2NDc3NTYyODksImlzcyI6IndlYi4zNjljeC5jbiIsImF1ZCI6ImFwaS53ZWIuMzY5Y3guY24ifQ.Eo714MKjyq9zMja4tYlcrZ5Mye9Nv1OaVS62SnYtMWEAjsjNIRrx1d0ZqW43EZAW4WhGD-TUc4o6R88Jrj_Hk9QjQ0ryyhITuzQE3TDDOlU6Ja3en-jWQGwbUhmanrOWJxKzjVU5H2jXHg6FfOGll2ZLK85ohKiiS9JpCtQN7hNeY0XroewtmR_CuCMCJEmpapI1SbGjgUKrW0CF-Je2GK1IiG7L5RJ-o-1U2bvQ4cot5lWE2BHLxvJZbqbBVctL7aJnN-euzPQ_AtYK3Qe2YuHV8Yj0AYf4r0slW8JqwRGzZysM8W7pW5p6iCruIxEJT9mTHoXhafh_mUbmWfkghQ",
+            "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Ik5EUTJNalEzWldRdFpEY3haaTAwWm1FeUxUZzFNV1V0WkRZellXRXlPVFU0WW1KbCIsInJvbGUiOiJWaXNpdG9yIiwibmFtZWlkIjoiLTk4NzYxNTUxMSIsImp0aSI6IjEwYThiNTZmLWUwOTgtNDUwNi05ZjI2LWJiODkwM2YyZjI5YSIsIm5iZiI6MTY0Nzc1NjU3NSwiZXhwIjoxODA1NTIyOTc1LCJpYXQiOjE2NDc3NTY1NzUsImlzcyI6IndlYi4zNjljeC5jbiIsImF1ZCI6ImFwaS53ZWIuMzY5Y3guY24ifQ.LCT4bENKbn_HqbivZxQoZ0_mrekZtsLcRwzj3gWvf_NvTgTYJQN4BvZItN0Peq1niQ6GgEwuVdBdZLb6rScXDqXNqs5uWwrOgBfeaZwuA01NKRs5R19vDVWCcrJ_clxUOUjPzKH8xV75x9_48GGll1UPXqvGL6tuw7aY2ahudgmnkui8dVNKDz199XaUMaXs0d1D8MZR6lNNd3QKV8A4C_Lm3AgGWld3kbfvc3q1NlRUEGuuUScJZhDm8NQXADhYHvW5eV0VgkWi9JseczbpmiMwGrRL4gadV6o1xkg-44wfw7PhHHjQC9p989dDIR3QmE52J_WQx8OwV-87E2_6OQ",
+        ]
+        return random.choice(jwt_dict)
 
+s_host = b'YXBpLjM2OWN4LmNu'
+host = base64.b64decode(s_host).decode()
 headers = {
-    'Host': 'api.369cx.cn',
+    'Host': host,
     'content-type': 'application/json',
-    'Authorization': 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IiIsInJvbGUiOiJWaXNpdG9yLFVzZXIiLCJuYW1laWQiOiIxMDg3NTI1IiwianRpIjoiYzllYTg0MmMtM2Y5MC00NzFlLWI0ZmEtMTg1MmFmZjk3MWRiIiwibmJmIjoxNjQ3ODYxODI1LCJleHAiOjE2NTA0NTM4MjUsImlhdCI6MTY0Nzg2MTgyNSwiaXNzIjoid2ViLjM2OWN4LmNuIiwiYXVkIjoiYXBpLndlYi4zNjljeC5jbiJ9.O2vcRdJW7MYEZ6FdiLa-hybS7RVIrlQXM1pbIjT6uZEnx-ZqUuGaKZ8ivtxrr9_-2w3nwTJhohvM7bXp6amovq_dQrNz6yxBewuM2hjdnCUFBm7cTt72bZLY-_6u1wI04N0tapc1ve7TY7xDVlhS9nSSkixoUX8_mXn-T9cRGaVDDuLHLFxnCewtUTXD3R2x6J8GK4x8_vJt1lwy1o1VxX0qbJXr9sfPbTo3ohPopq5vFvdJCFJ-DfTOf_-6fjnSItRM5xwi-t8B_MLAfB6GOe0Id1Uo4t34pg7gpiFMPXgLuOqs8-EOKbnvDun6YyK6IkAdVWRfvXO7wp6teBbTMw',
+    'authorization': get_jwt_token(),
     'CityId': '2500',
     'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.18(0x18001231) NetType/WIFI Language/zh_CN',
     'Referer': 'https://servicewechat.com/wx358ad33429ed6508/32/page-frame.html',
@@ -45,7 +90,9 @@ SHA_TZ = timezone(
 
 def scan(LINE, stations, SRC, DEST, dict, LINE_NAME):
     try:
-        response = requests.get('https://api.369cx.cn/v2/Bus/GetBussesByLineId/' + str(LINE), headers=headers)
+        s_url = b'aHR0cHM6Ly9hcGkuMzY5Y3guY24vdjIvQnVzL0dldEJ1c3Nlc0J5TGluZUlkLw=='
+        url = base64.b64decode(s_url).decode()
+        response = requests.get(str(url) + str(LINE), headers=headers)
         info = json.loads(response.text)
         result = info['result']
         for bus in result:
@@ -74,7 +121,9 @@ def scan(LINE, stations, SRC, DEST, dict, LINE_NAME):
 def research(LINE, SRC, DEST, LINE1, SRC1, DEST1, start_time, end_time):
 
     try:
-        response = requests.get('https://api.369cx.cn/v2/Line/GetRealTimeLineInfo/' + str(LINE), headers=headers)
+        s_url = b'aHR0cHM6Ly9hcGkuMzY5Y3guY24vdjIvTGluZS9HZXRSZWFsVGltZUxpbmVJbmZvLw=='
+        url = base64.b64decode(s_url).decode()
+        response = requests.get(str(url) + str(LINE), headers=headers)
         info = json.loads(response.text)
         stations = info['result']['stations']
         name = info['result']['name']
@@ -84,7 +133,9 @@ def research(LINE, SRC, DEST, LINE1, SRC1, DEST1, start_time, end_time):
         exit(0)
 
     try:
-        response = requests.get('https://api.369cx.cn/v2/Line/GetRealTimeLineInfo/' + str(LINE1), headers=headers)
+        s_url = b'aHR0cHM6Ly9hcGkuMzY5Y3guY24vdjIvTGluZS9HZXRSZWFsVGltZUxpbmVJbmZvLw=='
+        url = base64.b64decode(s_url).decode()
+        response = requests.get(url + str(LINE1), headers=headers)
         info = json.loads(response.text)
         stations1 = info['result']['stations']
         name1 = info['result']['name']
@@ -115,10 +166,7 @@ def research(LINE, SRC, DEST, LINE1, SRC1, DEST1, start_time, end_time):
 
         now = time.time()
         delta = (int)(now - start)
-        # print("+++++++++++++++++++++++++++++++++++++++++++++++")
-        # print("now:", time.strftime("%a %b %d %H:%M:%S %Y", time.localtime()), " delta: ", delta)
-        # print("start_time: ", start_time, " beijing_now: ", beijing_now, " end_time: ", end_time)
-        # print("+++++++++++++++++++++++++++++++++++++++++++++++")
+        # print(now, start, now - start)
         data1 = (beijing_now, start_time, end_time)
         data2 = (delta, delta_max, time.strftime("%a %b %d %H:%M:%S %Y", time.localtime()))
         detail1 = (detail1_fmt %data1)
@@ -127,7 +175,6 @@ def research(LINE, SRC, DEST, LINE1, SRC1, DEST1, start_time, end_time):
         content += detail1 + "\r\n"
         content += detail2
         content += "\r\n"
-
 
         if (delta >= delta_max):
             print("触发超时巡检退出条件，结束运行！")
