@@ -39,7 +39,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Scan
-        run: python 369bus.py 658 华龙路华阳路 工业南路开拓路 1047 世纪大道工业南路 世纪大道龙凤山路 "17:00" "19:30"
+        run: python 369bus.py 658 华龙路华阳路 牛旺庄 1047 牛旺庄 世纪大道龙凤山路 "17:00" "19:30"
 
       # Runs a set of commands using the runners shell
 #       - name: Run a multi-line script
