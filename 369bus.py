@@ -148,9 +148,10 @@ def research(LINE, SRC, DEST, LINE1, SRC1, DEST1, start_time, end_time):
     dict_308 = {}
 
     utc_now = datetime.utcnow().replace(tzinfo=timezone.utc)
-    beijing_now = utc_now.astimezone(SHA_TZ).strftime("%Y-%m-%d %H:%M")
-    print(beijing_now)
-    print(utc_now.weekday() + 1)
+    beijing_now = utc_now.astimezone(SHA_TZ).strftime("%H:%M")
+    beijing_cur = utc_now.astimezone(SHA_TZ)
+    print(beijing_cur.strftime("%Y-%m-%d %H:%M"))
+    print(beijing_cur.weekday() + 1)
 
     delta_max = (int)(3.95*60*60)
     start = time.time()
